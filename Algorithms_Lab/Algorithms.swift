@@ -78,39 +78,41 @@ public class Algorithms {
     public func maxSum_DivideConquer(_ input: [Int]){
         print("MaxSum Divide And Conquer")
         
-        func recursive(_ A: [Int], _ p: Int, _ r: Int) -> Int {
-            if (p == r){
-                return A[p]
-            }
-            
-            let q = (p+r)/2
-            
-            let x1 = recursive(A, p, q)
-            let x2 = recursive(A, q+1, r)
-            
-            var s = A[q]
-            var y1 = s;
-            
-            for i in (p..<(q-1)).reversed() {
-                print(i)
-                s += A[i]
-                y1 = max(y1, s)
-            }
-            
-            s = A[q+1]
-            
-            var y2 = s
-            
-            for j in (q+2)..<r {
-                s += A[j]
-                y2 = max(y2, s)
-            }
-            
-            let x = max(x1, y1 + y2, x2)
-            
-            return x
+        if (input.count == 0){
+            return;
         }
+        
+        func recursive(_ nums: [Int], _ left: Int, _ right: Int) -> Int {
+            if (right == left){
+                return nums[left]
+            }
             
-        print(recursive(input, 0, input.count))
+            let mid: Int = (left + right) / 2
+            
+            let firstVectorResult = recursive(nums, left, mid)
+            let secondVectorResult = recursive(nums, mid + 1, right)
+            
+            var sum: Int = nums[mid]
+            var maxLeft: Int = sum
+            
+            for i in stride(from: mid - 1, through: left, by: -1) {
+                sum += nums[i]
+                maxLeft = max(maxLeft, sum)
+            }
+            
+            sum = nums[mid+1]
+            var maxRight: Int = sum
+            
+            if (right >= (mid+2)){
+                for i in (mid+2)..<right{
+                    sum += nums[i]
+                    maxRight = max(maxRight, sum)
+                }
+            }
+            
+            return max(firstVectorResult, maxLeft + maxRight, secondVectorResult)
+        }
+        
+        print(recursive(input, 0, input.count -  1))
     }
 }
